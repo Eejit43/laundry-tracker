@@ -1,0 +1,18 @@
+{
+    "name": "laundry-tracker",
+    "type": "module",
+    "scripts": {
+        "start": "bun index.ts"
+    },
+    "prettier": "@eejit/prettier-config",
+    "dependencies": {
+        "google-auth-library": "^10.5.0",
+        "google-spreadsheet": "^5.0.2"
+    },
+    "devDependencies": {
+        "@eejit/eslint-config-typescript": "^15.0.0",
+        "@eejit/prettier-config": "^3.5.0",
+        "@types/bun": "latest",
+        "typescript": "^5.9.3"
+    }
+}
