@@ -18,18 +18,21 @@ const machineData = machines
     .map((machine) => ({
         number: machine.machineNumber,
         type: machine.machineType.typeName,
-        status: machine.currentStatus.statusId,
-        startTime: machine.currentStatus.createdAt,
-        remainingTime: machine.currentStatus.remainingSeconds,
-        cycle: machine.currentStatus.selectedCycle.name,
-        modifier: machine.currentStatus.selectedModifier.name,
+        status: machine.currentStatus?.statusId,
+        startTime: machine.currentStatus?.createdAt,
+        remainingTime: machine.currentStatus?.remainingSeconds,
+        cycle: machine.currentStatus?.selectedCycle.name,
+        modifier: machine.currentStatus?.selectedModifier.name,
     }))
     .sort((a, b) => Number.parseInt(b.number) - Number.parseInt(a.number)); // eslint-disable-line unicorn/no-array-sort
 
 const roomSummary: [string, [string, number][]][] = Object.entries(Object.groupBy(machineData, (machine) => machine.type)).map(
     ([type, machines]) => [
         type,
-        Object.entries(Object.groupBy(machines, (machine) => machine.status)).map(([status, machines]) => [status, machines!.length]),
+        Object.entries(Object.groupBy(machines, (machine) => machine.status ?? 'UNKNOWN')).map(([status, machines]) => [
+            status,
+            machines!.length,
+        ]),
     ],
 );
 

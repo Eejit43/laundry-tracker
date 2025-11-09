@@ -164,7 +164,7 @@ export interface RoomsMachinesResult {
     machineNumber: string;
     machineAuditType: MachineAuditType;
     machineAuditGroupType: MachineAuditType;
-    currentStatus: CurrentStatus;
+    currentStatus: CurrentStatus | null;
     ordinalValue: number;
 }
 
