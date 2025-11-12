@@ -64,11 +64,31 @@ const serviceAccountAuth = new JWT({
 
 const document = new GoogleSpreadsheet(process.env.SPREADSHEET_ID!, serviceAccountAuth);
 
-await document.loadInfo();
+/**
+ * Retries a function up to 3 times with a 1 second delay between attempts if it throws an error.
+ * @param functionToRetry The asynchronous function to retry.
+ */
+async function retryWithTimeout(functionToRetry: () => Promise<unknown>) {
+    let attemptsRemaining = 3;
+
+    while (attemptsRemaining > 0)
+        try {
+            await functionToRetry(); // eslint-disable-line no-await-in-loop
+            return;
+        } catch (error) {
+            attemptsRemaining -= 1;
+            if (attemptsRemaining === 0) throw error;
+
+            console.warn(`Error occurred, retrying... (${attemptsRemaining} attempts remaining)`);
+            await new Promise((resolve) => setTimeout(resolve, 1000)); // eslint-disable-line no-await-in-loop
+        }
+}
+
+await retryWithTimeout(() => document.loadInfo());
 
 const sheet = document.sheetsByIndex[0];
 
-await sheet.addRows(spreadsheetFormattedSummary);
+await retryWithTimeout(() => sheet.addRows(spreadsheetFormattedSummary));
 
 console.log(`Successfully updated spreadsheet with new laundry data as of ${timestamp}.`);
 
